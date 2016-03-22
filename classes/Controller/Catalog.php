@@ -113,31 +113,20 @@ class Controller_Catalog extends Controller_System_Page
         /* Meta tags */
         $this->title = htmlspecialchars( $category->name .' - '.$this->config['view']['title']);
 
-        /* Init Pagination module */
-        $count = ORM::factory('CatalogCompany');
-        if($city instanceof ORM)
-            $count->where('city_id','=', $city->id);
-        if($category instanceof ORM){
-            $count->join(array('catalog_company2category', 'c2c'), 'INNER')->on('catalogcompany.id','=','c2c.company_id')
-                ->where('c2c.category_id','=', $category->id);
-        }
-        $count = $count->and_where('enable','=','1')->count_all();
-        $pagination = Pagination::factory(array(
-            'total_items' => $count,
-            'group' => 'catalog',
-        ))->route_params(array(
-            'controller' => Request::current()->controller(),
-        ));
 
         /* Поиск компаний */
-        $companies = ORM::factory('CatalogCompany');
+//        $companies = ORM::factory('CatalogCompany');
+        $model = ORM::factory('CatalogCompany');
+        $companies = DB::select()->from($model->table_name())->as_object(get_class($model));
         if($city instanceof ORM){
-            $companies->where('city_id','=', $city->id);
+            $companies->where(!$city->parent_id ? 'pcity_id' : 'city_id','=', $city->id);
         }
         if($category instanceof ORM){
-            $companies
-                ->join(array('catalog_company2category', 'c2c'), 'INNER')->on('catalogcompany.id','=','c2c.company_id')
-                ->where('c2c.category_id','=', $category->id);
+            $companies->join(array('catalog_company2category', 'c2c'), 'INNER')->on('catalogcompany.id','=','c2c.company_id');
+            if(!$category->parent_id)
+                $companies->where('c2c.category_id','IN', $category->getChildrenId());
+            else
+                $companies->where('c2c.category_id','=', $category->id);
         }
         $_query = Arr::get($_GET, 'query');
         if(!empty($_query) && mb_strlen($_query) >= 3){
@@ -146,12 +135,28 @@ class Controller_Catalog extends Controller_System_Page
         $companies = $companies
             ->and_where('enable','=','1')
             ->order_by('vip', 'desc')
-            ->order_by('addtime', 'DESC')
-            ->offset($pagination->offset)
+            ->order_by('addtime', 'DESC');
+
+
+        /* Init Pagination module */
+        $count = clone($companies);
+        $count = $count->select(DB::expr('count(*) cnt'))->cached(Model_BoardAd::CACHE_TIME)->as_assoc()->execute();
+        $pagination = Pagination::factory(array(
+            'total_items' => $count[0]['cnt'],
+            'group' => 'catalog',
+        ))->route_params(array(
+            'controller' => Request::current()->controller(),
+            'city_alias' => $city_alias,
+            'cat_alias' => $cat_alias,
+        ));
+
+        /* Receive companies */
+        $companies = $companies->offset($pagination->offset)
             ->limit($pagination->items_per_page)
-            ->find_all()->as_array('id');
+            ->execute()->as_array('id') ;
         $photos = ORM::factory('CatalogCompanyPhoto')->companiesPhotoList(array_keys($companies));
 
+        /* Init template */
         $this->template->content
             ->set('category', $category)
             ->set('city', $city)
@@ -173,8 +178,11 @@ class Controller_Catalog extends Controller_System_Page
             DB::update($company->table_name())->set(array('views'=>DB::expr('views+1')))->where('id', '=', $id)->execute();
 
             /* breadcrumbs & similar articles */
-            if(isset($this->categories[$company->category_id]))
-                $this->breadcrumbs->add($this->categories[$company->category_id]->name, $this->categories[$company->category_id]->getUri(), 3);
+            /* Breadcrumbs & part parents */
+            $city_parents = ORM::factory('CatalogCity', $company->city_id)->parents(true, true)->as_array('id');
+            foreach($city_parents as $_parent)
+                $this->breadcrumbs->add($_parent->name, $_parent->getUri());
+            $this->breadcrumbs->add($company->name, FALSE);
 
             /* Meta tags */
             $this->title = htmlspecialchars( !empty($company->title) ? $company->title : $company->name .' - '.$this->config['view']['title'], ENT_QUOTES);
