@@ -9,6 +9,7 @@ class Controller_Admin_Catalog extends Controller_Admin_Crud
         'status',
         'import',
         'importCategory',
+        'test',
     );
 
     protected $_item_name = 'company';
@@ -278,5 +279,17 @@ class Controller_Admin_Catalog extends Controller_Admin_Crud
 ////            $company->finalizeSource($company->website);
 //            $company->setMainPhoto();
 //        }
+    }
+
+
+    public function action_test(){
+        $companies = ORM::factory('CatalogCompany')->find_all();
+        foreach($companies as $company){
+            $city = ORM::factory('CatalogCity', $company->city_id);
+            if($city->loaded()){
+                $company->pcity_id = $city->parent_id;
+                $company->save();
+            }
+        }
     }
 }

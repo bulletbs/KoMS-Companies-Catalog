@@ -35,7 +35,17 @@ class Model_CatalogCompany extends ORM{
         return array(
             'name' => array(
                 array('not_empty'),
-                array('min_length', array('value:',3)),
+                array('min_length', array(':value',3)),
+            ),
+            'desc' => array(
+                array('not_empty'),
+            ),
+            'address' => array(
+                array('not_empty'),
+            ),
+            'telephone' => array(
+                array('not_empty'),
+                array('min_length', array(':value',10)),
             ),
             'city_id' => array(
                 array('not_empty'),
@@ -133,8 +143,10 @@ class Model_CatalogCompany extends ORM{
      * @return ORM|void
      */
     public function save(Validation $validation = NULL){
-        if(!$this->addtime)
+        if(!$this->addtime){
             $this->addtime = time();
+            $this->enable = 1;
+        }
         /**
          * Setting parents
          */

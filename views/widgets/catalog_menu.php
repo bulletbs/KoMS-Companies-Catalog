@@ -15,6 +15,7 @@
     </ul>
 </div>
 <?if(!Auth::instance()->logged_in('company')):?>
+<br>
 <div class="catalog_menu">
     <a href="/shops/register" class="pure-button center">Зарегистрировать магазин</a>
 </div>

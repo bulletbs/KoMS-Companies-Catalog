@@ -41,4 +41,4 @@
     });
 </script>
 </div>
-<div class="col_tools"><?php /*echo Widget::factory('catalogMenu')*/?></div>
+<div class="col_tools"><?php echo Widget::factory('catalogMenu')?></div>
