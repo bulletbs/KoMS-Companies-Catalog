@@ -31,8 +31,8 @@ class Model_CatalogCategory_catalog extends ORM{
         return array(
             'name' => array(
                 array('not_empty'),
-                array('min_length', array('value:',3)),
-                array('max_length', array('value:',50)),
+                array('min_length', array(':value',3)),
+                array('max_length', array(':value',50)),
             ),
         );
     }
