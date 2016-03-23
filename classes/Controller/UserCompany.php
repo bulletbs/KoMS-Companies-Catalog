@@ -203,7 +203,9 @@ class Controller_UserCompany extends Controller_User
                     $user = $this->current_user;
                 $company->user_id = $user->id;
                 $company->save();
-                $this->go(Auth::instance()->logged_in('login') ? 'catalog/company_created' : 'catalog/registration_done');
+                $this->go(Route::get('catalog_user')->uri(array(
+                    'action' => Auth::instance()->logged_in('login') ? 'company_created' : 'registration_done'
+                )));
             }
         }
 
