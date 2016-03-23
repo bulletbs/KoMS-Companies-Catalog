@@ -175,8 +175,6 @@ class Controller_UserCompany extends Controller_User
     public function action_register(){
         if(Auth::instance()->logged_in('company'))
             $this->redirect(Route::get('catalog_mycompany')->uri(array()));
-        if(Auth::instance()->logged_in() && !$this->request->is_ajax())
-            $this->go('profile');
 
         $company = ORM::factory('CatalogCompany');
         if(Request::initial()->method() == Request::POST){
