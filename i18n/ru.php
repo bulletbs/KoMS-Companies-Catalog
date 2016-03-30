@@ -73,5 +73,7 @@ return array(
     'Your company successfully turned off' => 'Ваш магазин успешно выключен',
     'Your company successfully turned on' => 'Ваш магазин успешно включен',
     'Company not found' => 'Магазин не найден',
+
+    'Sing in like company owner' => 'Войти как владелец магазина',
     '' => '',
 );

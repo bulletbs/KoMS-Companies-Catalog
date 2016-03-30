@@ -28,16 +28,6 @@ class Controller_Admin_CatalogModerate extends Controller_Admin_Moderate
      * @return int
      */
     protected function _setAllModerated(){
-        $user_ids = DB::select(DB::expr('DISTINCT(user_id)'))->from(ORM::factory($this->model_name)->table_name())->where($this->moderate_field, '=', self::NOT_MODERATED)->execute();
-        $role = ORM::factory('Role')->where('name', '=', 'company')->find();
-        foreach($user_ids as $row){
-            $user = ORM::factory('User', $row['user_id']);
-            if($user->loaded()){
-                $user->load_roles();
-                if(!$user->has_role($role->name))
-                    $user->add('roles', $role);
-            }
-        }
         return DB::update(ORM::factory($this->model_name)->table_name())->set(array($this->moderate_field=>1))->where($this->moderate_field, '=', self::NOT_MODERATED)->execute();
     }
 
@@ -47,16 +37,6 @@ class Controller_Admin_CatalogModerate extends Controller_Admin_Moderate
      * @return object
      */
     protected function _setModerated(Array $ids){
-        $user_ids = DB::select(DB::expr('DISTINCT(user_id)'))->from(ORM::factory($this->model_name)->table_name())->where($this->moderate_field, '=', self::NOT_MODERATED)->and_where('id', 'IN', $ids)->execute();
-        $role = ORM::factory('Role')->where('name', '=', 'company')->find();
-        foreach($user_ids as $row){
-            $user = ORM::factory('User', $row['user_id']);
-            if($user->loaded()){
-                $user->load_roles();
-                if(!$user->has_role($role->name))
-                    $user->add('roles', $role);
-            }
-        }
         return DB::update(ORM::factory($this->model_name)->table_name())->set(array($this->moderate_field=>1))->where($this->moderate_field, '=', self::NOT_MODERATED)->and_where('id','IN',$ids)->execute();
     }
 }

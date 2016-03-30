@@ -12,8 +12,6 @@
         <?=Form::input('name', $model->name, array('class' => ''));  ?>
         <?=Form::label('desc', __('Company description'));  ?>
         <?=Form::textarea('desc', $model->desc, array('class' => ''));  ?>
-        <?=Form::label('enable',' ');  ?>
-        <?=Form::checkbox('enable', 1, $model->enable==1, array('class' => '')) .' '. __('Status');  ?>
         <legend><?php echo  __('Company contacts')?></legend>
         <div class="pure-g">
             <div class="pure-u-1-2">

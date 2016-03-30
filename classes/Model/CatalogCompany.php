@@ -379,10 +379,13 @@ class Model_CatalogCompany extends ORM{
                 ->distinct('category_id')
                 ->from('ads')
                 ->where('company_id', '=', $company_id)
+                ->and_where('publish', '=', 1)
                 ->execute();
             ;
             foreach($ids as $_category)
                 $company->add('categories', $_category['category_id']);
+            $company->enable = count($ids) > 0;
+            $company->save();
         }
     }
 }

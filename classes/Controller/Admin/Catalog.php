@@ -9,6 +9,7 @@ class Controller_Admin_Catalog extends Controller_Admin_Crud
         'status',
         'import',
         'importCategory',
+        'userin',
         'test',
     );
 
@@ -87,6 +88,9 @@ class Controller_Admin_Catalog extends Controller_Admin_Crud
                     '1' => 'eye-open',
                 ),
             ),
+            'action' => 'userin',
+            'label' => 'Sing in like company owner',
+            'icon' => 'log-in',
         ),
     );
 
@@ -285,6 +289,24 @@ class Controller_Admin_Catalog extends Controller_Admin_Crud
 ////            $company->finalizeSource($company->website);
 //            $company->setMainPhoto();
 //        }
+    }
+
+    /**
+     * Logging admin as simple user
+     */
+    public function action_userin(){
+        $id = Request::current()->param('id');
+        $company = ORM::factory('CatalogCompany', $id);
+        if(!$company->loaded())
+            $this->redirect( Request::current()->referrer() );
+        $user = ORM::factory('User', $company->user_id);
+        if(!$user->loaded())
+            $this->redirect( Request::current()->referrer() );
+        if($user->loaded()){
+            Session::instance()->set(Model_User::SESSION_SUBUSER_NAME, $user->id);
+            $this->redirect('/profile/shop');
+        }
+        $this->redirect( Request::current()->referrer() );
     }
 
 

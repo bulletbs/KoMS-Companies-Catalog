@@ -55,11 +55,9 @@ class Controller_UserCompany extends Controller_User
 
 //        $model = ORM::factory('CatalogCompany')->where('id', '=', $id)->and_where('user_id', '=', $this->current_user->id)->find();
         $model = ORM::factory('CatalogCompany')->where('user_id', '=', $this->current_user->id)->find();
-        $photos = $model->photos->find_all();
-//        if($id > 0 && !$model->loaded())
-//            $this->redirect(URL::site().Route::get('catalog_mycompany')->uri());
         if(!$model->loaded())
             $this->redirect( URL::site() . Route::get('catalog_user')->uri(array('action'=>'register')) );
+        $photos = $model->photos->find_all();
 
         if(HTTP_Request::POST == $this->request->method()){
             if(Arr::get($_POST, 'cancel'))
@@ -207,10 +205,17 @@ class Controller_UserCompany extends Controller_User
                 $errors = Arr::merge($errors, $e->errors('validation'));
             }
             if(!count($errors)){
-                if(!Auth::instance()->logged_in('login'))
+                $role = ORM::factory('Role')->where('name', '=', 'company')->find();
+                if(!Auth::instance()->logged_in('login')){
                     $user = $this->_saveUserData($data);
-                else
+                    $user->add('roles', $role);
+                }
+                else{
                     $user = $this->current_user;
+                    $user->load_roles();
+                    if(!$user->has_role($role->name))
+                        $user->add('roles', $role);
+                }
                 $company->user_id = $user->id;
                 $company->save();
                 $this->go(Route::get('catalog_user')->uri(array(
