@@ -49,9 +49,14 @@ class Controller_Admin_Catalog extends Controller_Admin_Crud
 //        ),
         'addtime' => array('type' => 'datetime'),
         'enable' => array('type' => 'checkbox'),
+        'user_id' => array('type' => 'digit'),
         'vip' => array('type' => 'checkbox'),
         'address' => array('type' => 'text'),
 //        'city' => array('type' => 'text'),
+        'city_id' => array(
+            'type' => 'select',
+            'data' => array('options' => array())
+        ),
         'state' => array('type' => 'text'),
         'country' => array('type' => 'text'),
         'postcode' => array('type' => 'text'),
@@ -112,6 +117,7 @@ class Controller_Admin_Catalog extends Controller_Admin_Crud
         /* Setting categories select field */
 //        $this->_form_fields['category_id']['data']['options'] = ORM::factory('CatalogCategory')->getOptionList();
 //        $this->_form_fields['category_id']['data']['selected'] = $model->category_id;
+        $this->_form_fields['city_id']['data']['options'] = ORM::factory('CatalogCity')->getTwoLevelArray();
 
         /* Setting photos field */
         $this->_form_fields['photos']['advanced_data']['photos'] = ORM::factory('CatalogCompanyPhoto')->where('company_id', '=', $model->id)->find_all()->as_array('id');
