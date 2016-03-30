@@ -35,6 +35,7 @@ return array(
     'Views' => 'Просмотров',
     'Comments count' => 'Количество комментариев',
     'Photos' => 'Фотографии',
+    'Logo' => 'Логотип',
 
     'Send message to company' => 'Отправить сообщение в магазин',
 
@@ -51,7 +52,6 @@ return array(
     'Part Name' => 'Название раздела',
     'Name' => 'Название',
 
-
     'CompanyId' => 'Компания',
     'Width' => 'Ширина',
     'Height' => 'Высота',
@@ -67,6 +67,7 @@ return array(
     'Company address' => 'Адрес магазина',
     'Company contacts' => 'Контактная информация',
     'Company images' => 'Логотип',
+    'Delete company logo' => 'Удалить логотип',
     'Your company successfully saved' => 'Ваш магазин успешно сохранен',
     'Your company successfully removed' => 'Ваш магазин успешно удален',
     'Your company successfully turned off' => 'Ваш магазин успешно выключен',

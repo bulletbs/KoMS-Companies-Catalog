@@ -41,6 +41,7 @@
         <?if(isset($photos[0])):?>
         <div>
             <?php echo HTML::image($photos[0]->getThumbUri())?>
+            <?php echo Form::label('del_logo', Form::checkbox('del_logo', 1) . __('Delete company logo'))?>
         </div>
         <?endif?>
         <?php echo Form::file('logo', array('class'=>'form-control')) ?>

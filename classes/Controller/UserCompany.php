@@ -69,12 +69,22 @@ class Controller_UserCompany extends Controller_User
             try{
                 $model->save();
 
-                /* Save photos */
-                $logo = Arr::get($_FILES, 'logo', false);
-                if($logo && is_file($logo['tmp_name']) && Image::isImage($logo['tmp_name'])){
+                /* Delete photos */
+                $dellogo = Arr::get($_POST, 'del_logo', false);
+                if($dellogo){
                     $photos = $model->photos->find_all();
                     foreach($photos as $_photo)
                         $_photo->delete();
+                }
+
+                /* Save photos */
+                $logo = Arr::get($_FILES, 'logo', false);
+                if($logo && is_file($logo['tmp_name']) && Image::isImage($logo['tmp_name'])){
+                    if(!$dellogo){
+                        $photos = $model->photos->find_all();
+                        foreach($photos as $_photo)
+                            $_photo->delete();
+                    }
                     $model->addPhoto($logo['tmp_name']);
                 }
 //                $files = Arr::get($_FILES, 'photos', array('tmp_name' => array()));
