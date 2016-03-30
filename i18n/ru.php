@@ -75,5 +75,6 @@ return array(
     'Company not found' => 'Магазин не найден',
 
     'Sing in like company owner' => 'Войти как владелец магазина',
+    'Edit company owner' => 'Редактировать владелеца магазина',
     '' => '',
 );

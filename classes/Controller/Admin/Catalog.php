@@ -10,6 +10,7 @@ class Controller_Admin_Catalog extends Controller_Admin_Crud
         'import',
         'importCategory',
         'userin',
+        'useredit',
         'test',
     );
 
@@ -88,9 +89,17 @@ class Controller_Admin_Catalog extends Controller_Admin_Crud
                     '1' => 'eye-open',
                 ),
             ),
+        ),
+        array(
             'action' => 'userin',
             'label' => 'Sing in like company owner',
             'icon' => 'log-in',
+        ),
+        array(
+            'action' => 'useredit',
+            'label' => 'Edit company owner',
+            'icon' => 'user',
+            'target' => '_blank'
         ),
     );
 
@@ -309,6 +318,20 @@ class Controller_Admin_Catalog extends Controller_Admin_Crud
         $this->redirect( Request::current()->referrer() );
     }
 
+    public function action_useredit(){
+        $id = Request::current()->param('id');
+        $company = ORM::factory('CatalogCompany', $id);
+        if(!$company->loaded())
+            $this->redirect( Request::current()->referrer() );
+        $user = ORM::factory('User', $company->user_id);
+        if(!$user->loaded())
+            $this->redirect( Request::current()->referrer() );
+        $this->redirect( Route::get('admin')->uri(array(
+            'controller' => 'users',
+            'action' => 'edit',
+            'id' => $user->id,
+        )) );
+    }
 
     public function action_test(){
         $companies = ORM::factory('CatalogCompany')->find_all();
