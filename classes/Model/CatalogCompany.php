@@ -29,6 +29,10 @@ class Model_CatalogCompany extends ORM{
             'foreign_key' => 'company_id',
             'far_key' => 'category_id',
         ),
+        'ads' =>array(
+            'model' => 'BoardAd',
+            'foreign_key' => 'company_id',
+        ),
     );
 
     public function rules(){
@@ -145,7 +149,6 @@ class Model_CatalogCompany extends ORM{
     public function save(Validation $validation = NULL){
         if(!$this->addtime){
             $this->addtime = time();
-            $this->enable = 1;
         }
         /**
          * Setting parents
@@ -161,9 +164,10 @@ class Model_CatalogCompany extends ORM{
      * @return ORM|void
      */
     public function delete(){
-        if($this->user_id){
+        if($this->user_id)
             $this->user->remove('roles', ORM::factory('role', array('name' => 'company')));
-        }
+        foreach( $this->ads->find_all() as $ad)
+            $ad->delete();
         foreach( $this->photos->find_all() as $photo)
             $photo->delete();
         if(is_dir(DOCROOT."/media/upload/catalog/". $this->id))

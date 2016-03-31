@@ -9,7 +9,7 @@
 <?endif?>
 
 <?if(count($errors)):?><?= View::factory('error/validation', array('errors' => $errors))->render()?><?endif;?>
-<?=Form::open(Route::get('catalog_user')->uri(array('action'=>'register')), array('class' => 'pure-form pure-form-stacked'))?>
+<?=Form::open(Route::get('catalog_user')->uri(array('action'=>'register')), array('class' => 'pure-form pure-form-stacked', 'enctype'=>'multipart/form-data'))?>
 <?if(!Auth::instance()->logged_in('login')):?>
 <fieldset>
     <legend><?php echo __('User information')?></legend>

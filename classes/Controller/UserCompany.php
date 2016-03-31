@@ -218,6 +218,12 @@ class Controller_UserCompany extends Controller_User
                 }
                 $company->user_id = $user->id;
                 $company->save();
+
+                $logo = Arr::get($_FILES, 'logo', false);
+                if($logo && is_file($logo['tmp_name']) && Image::isImage($logo['tmp_name'])){
+                    $company->addPhoto($logo['tmp_name']);
+                }
+
                 $this->go(Route::get('catalog_user')->uri(array(
                     'action' => Auth::instance()->logged_in('login') ? 'company_created' : 'registration_done'
                 )));
