@@ -1,7 +1,12 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
 if(!Route::cache()){
-    Route::set('catalog', 'shops(/<action>(/<id>)(/p<page>.html))', array('action' => '(goto|send_message)', 'id' => '[0-9]+', 'page' => '[0-9]+'))
+    Route::set('catalog_main', 'shops(/p<page>.html)', array('page' => '[0-9]+'))
+        ->defaults(array(
+            'controller' => 'catalog',
+            'action' => 'search',
+        ));
+    Route::set('catalog', 'shops(/<action>)(/<id>)(/p<page>.html)', array('action' => '(goto|send_message)', 'id' => '[0-9]+', 'page' => '[0-9]+'))
         ->defaults(array(
             'controller' => 'catalog',
             'action' => 'search',
