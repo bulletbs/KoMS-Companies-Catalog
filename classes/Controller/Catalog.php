@@ -249,12 +249,17 @@ class Controller_Catalog extends Controller_System_Page
                 'cat_alias' => $this->request->param('cat_alias'),
             ));
 
-            $ads->offset($pagination->offset)->limit($pagination->items_per_page);
+            $ads->offset($pagination->offset)->limit($pagination->items_per_page); // ->as_array('id');
             $ads = $ads->execute();
+            $ads_ids = array();
+            foreach($ads as $_ad)
+                $ads_ids[] = $_ad->id;
+            $photos = Model_BoardAdphoto::adsPhotoList($ads_ids);
 
             $this->styles[] = "assets/board/css/board.css";
             $this->template->content->set(array(
                 'ads' => $ads,
+                'photos' => $photos,
                 'pagination' => $pagination,
                 'company' => $company,
                 'categories' => $categories
