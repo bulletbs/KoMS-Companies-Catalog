@@ -196,7 +196,7 @@ class Controller_Catalog extends Controller_System_Page
             $ad_categories = $company->loadCompanyCategories();
 
             /* Libs */
-            $this->styles[] = "media/libs/pure-release-0.5.0/forms.css";
+            $this->styles[] = "media/libs/pure-release-0.6.0/forms.css";
             $this->styles[] = "media/libs/lightbox/lightbox.css";
             $this->scripts[] = "media/libs/lightbox/lightbox.js";
             $this->scripts[] = 'media/js/catalog/company.js';
