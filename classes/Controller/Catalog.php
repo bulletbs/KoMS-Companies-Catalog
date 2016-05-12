@@ -52,8 +52,8 @@ class Controller_Catalog extends Controller_System_Page
 //        if(!$content = Cache::instance()->get(self::MAIN_PAGE_CACHE)){
 
             /* META */
-            $title = $this->cfg['main_title'];
-            $this->title = $this->cfg['main_title'];
+            $title = $this->cfg['module_name'];
+            $this->title = str_replace('<project>', $this->config['project']['host'], $this->cfg['main_title']);
 
             /* Init Pagination module */
             $count = ORM::factory('CatalogCompany')->where('enable','=','1')->count_all();
@@ -88,7 +88,7 @@ class Controller_Catalog extends Controller_System_Page
 
         /* Загрузка региона */
         $city_alias = $this->request->param('city_alias');
-        if($city_alias){
+        if($city_alias && $city_alias!='all'){
             $city_id = Model_CatalogCity::getCityIdByAlias($city_alias);
             $city = ORM::factory('CatalogCity', $city_id);
             if(!$city->loaded())
@@ -111,7 +111,15 @@ class Controller_Catalog extends Controller_System_Page
         }
 
         /* Meta tags */
-        $this->title = htmlspecialchars( $category->name .' - '.$this->config['view']['title']);
+        $title_params = array(
+            '<project>' => ucfirst($this->config['project']['host']),
+        );
+        if($category instanceof ORM){
+            $title_params['<category>'] = $category->name;
+            $this->title = str_replace(array_keys($title_params), array_values($title_params), $this->cfg['category_title']);
+        }
+        else
+            $this->title = str_replace(array_keys($title_params), array_values($title_params), $this->cfg['main_title']);
 
 
         /* Поиск компаний */
@@ -122,7 +130,7 @@ class Controller_Catalog extends Controller_System_Page
             $companies->where(!$city->parent_id ? 'pcity_id' : 'city_id','=', $city->id);
         }
         if($category instanceof ORM){
-            $companies->join(array('catalog_company2category', 'c2c'), 'INNER')->on('catalogcompany.id','=','c2c.company_id');
+            $companies->join(array('catalog_company2category', 'c2c'), 'INNER')->on($model->table_name().'.id','=','c2c.company_id');
             if(!$category->parent_id)
                 $companies->where('c2c.category_id','IN', $category->getChildrenId());
             else
@@ -136,7 +144,6 @@ class Controller_Catalog extends Controller_System_Page
             ->and_where('enable','=','1')
             ->order_by('vip', 'desc')
             ->order_by('addtime', 'DESC');
-
 
         /* Init Pagination module */
         $count = clone($companies);
@@ -185,7 +192,7 @@ class Controller_Catalog extends Controller_System_Page
             $this->breadcrumbs->add($company->name, FALSE);
 
             /* Meta tags */
-            $this->title = htmlspecialchars( !empty($company->title) ? $company->title : $company->name .' - '.$this->config['view']['title'], ENT_QUOTES);
+            $this->title = htmlspecialchars( $company->name .' - '.ucfirst($this->config['project']['host'])    , ENT_QUOTES);
             $this->description = htmlspecialchars( substr( strip_tags($company->desc) , 0, 255), ENT_QUOTES);
 //            $this->keywords = !empty($company->keywords) ? $company->keywords : $this->config->view['keywords'];
 

@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');?>
 
-<h1>Объявления компании <?php echo $company->name?></h1>
+<h1>Объявления магазина <?php echo $company->name?></h1>
 
 <?if(count($categories)):?>
 <ul class="search_sub_col"><?$_steps = ceil(count($categories)/5); $_step = 0;?>

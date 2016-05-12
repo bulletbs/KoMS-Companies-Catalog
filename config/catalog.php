@@ -3,7 +3,9 @@ return array(
     // Integrate with modules (take regions and items from another module)
     'board_integrated ' => TRUE,
 
-    // Title of module
     'module_name'       => 'Магазины',
-    'main_title'       => 'Магазины',
+
+    // Title of module
+    'main_title'       => 'Магазины на <project>',
+    'category_title'       => '<category> в магазинах на <project>',
 );
