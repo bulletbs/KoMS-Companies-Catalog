@@ -36,6 +36,5 @@
     <b>К сожалению не удалось найти объявления по указаным критериям</b><br /><br />
     <?php echo Widget::factory('Banner728x90')?>
 <?endif?>
-<?= $pagination->render()?>
 </div>
 <div class="col_tools"><?php echo Widget::factory('catalogMenu')?></div>
