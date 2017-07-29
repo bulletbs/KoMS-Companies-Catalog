@@ -59,10 +59,7 @@
     <?php echo Form::file('logo', array('class'=>'form-control')) ?>
 </fieldset>
 <?if(!Auth::instance()->logged_in('login')):?>
-    <Br><?php echo Captcha::instance() ?>
-    <?= Form::label('captcha', __('Enter captcha code')) ?>
-    <?php echo Form::input('captcha', NULL, array('id' => 'captcha-key'))?>
-    <br>
+    <?php echo Captcha::instance(); ?>
 <?endif?>
     <?=Form::submit('register', __('Register'), array('type'=>'submit', 'class' => 'pure-button pure-button-primary'));  ?>
 <?=Form::close()?>
