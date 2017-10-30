@@ -36,6 +36,7 @@ return array(
     'Comments count' => 'Количество комментариев',
     'Photos' => 'Фотографии',
     'Logo' => 'Логотип',
+    'ADs limit' => 'Лимит объявлений',
 
     'Send message to company' => 'Отправить сообщение в магазин',
 

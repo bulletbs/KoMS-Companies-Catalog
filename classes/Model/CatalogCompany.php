@@ -89,6 +89,7 @@ class Model_CatalogCompany extends ORM{
             'views' => __('Views'),
             'comments' => __('Comments count'),
             'photos' => __('Photos'),
+            'maxads' => __('ADs limit'),
         );
     }
 
@@ -344,6 +345,17 @@ class Model_CatalogCompany extends ORM{
      * than has not been moderated before
      * @return int
      */
+    public function countAds(){
+        $count = $this->ads->count_all();
+        return $count;
+    }
+
+
+    /**
+     * Count comment objects array
+     * than has not been moderated before
+     * @return int
+     */
     public function countNotModerated(){
         $count = ORM::factory($this->object_name())->where('moderate', '=', 0)->count_all();
         return $count;
@@ -379,7 +391,7 @@ class Model_CatalogCompany extends ORM{
         $company = ORM::factory('CatalogCompany', $company_id);
         if($company->loaded()){
             $company->remove('categories');
-            $ids = DB::select()
+            $ids = DB::select('category_id')
                 ->distinct('category_id')
                 ->from('ads')
                 ->where('company_id', '=', $company_id)

@@ -73,6 +73,7 @@ class Controller_Admin_Catalog extends Controller_Admin_Crud
                 'photos' => array(),
             )
         ),
+        'maxads' => array('type' => 'digit'),
 //        'meta' => array('type' => 'legend', 'name' => 'Meta tags'),
 //        'metakey' => array('type' => 'text'),
 //        'metadesc' => array('type' => 'text'),
@@ -100,6 +101,15 @@ class Controller_Admin_Catalog extends Controller_Admin_Crud
             'label' => 'Edit company owner',
             'icon' => 'user',
             'target' => '_blank'
+        ),
+        array(
+            'action' => 'importset',
+            'label' => 'Set import',
+            'icon' => 'import',
+            'parameters' => array(
+                'data-toggle' => 'koms-modal',
+                'data-target' => '#modal',
+            )
         ),
     );
 
@@ -341,6 +351,60 @@ class Controller_Admin_Catalog extends Controller_Admin_Crud
                 $company->pcity_id = $city->parent_id;
                 $company->save();
             }
+        }
+    }
+
+    /**
+     * Ajax method to set import right and limit
+     * @throws HTTP_Exception_404
+     * @throws View_Exception
+     */
+    public function action_importset(){
+        if(!Request::current()->is_ajax())
+            throw new HTTP_Exception_404;
+        $id = Request::current()->param('id', Request::current()->post('id'));
+
+        $company = ORM::factory('CatalogCompany',  $id);
+        if($company->loaded()){
+            $user = $company->user;
+            $user->load_roles();
+
+            /* SAVE FORM  */
+            if(Request::current()->method() == Request::POST){
+                /* Save max ads value */
+                $company->maxads = Request::current()->post('maxads');
+                $company->save();
+                /* Set import right */
+                $role = ORM::factory('Role')->where('name', '=', 'import')->find();
+                $import = Request::current()->post('import');
+                if($import && !$user->has_role('import'))
+                    $user->add('roles', $role);
+                elseif(!$import && $user->has_role('import'))
+                    $user->remove('roles',$role);
+
+                $this->json['status'] = true;
+                $this->json['message'] = "Права на импорт объявлений успешно сохранены";
+                return true;
+            }
+
+            /* OUTPUT FORM */
+            $template = $this->getContentTemplate('admin/catalog/importset');
+            $template->set(array(
+                'import' => $user->has_role('import'),
+                'maxads' => $company->maxads,
+                'user' => $user,
+                'company' => $company,
+            ));
+            $this->json['status'] = true;
+            $this->json['content'] = $this->getContentTemplate('admin/crud/modal')->set(array(
+                'target' => '/admin/catalog/importset/'.$id,
+                'title' => 'Импорт объявлений для &laquo;'.$company->name.'&raquo;',
+                'content' => $template,
+            ))->render();
+        }
+        else{
+            $this->json['status'] = false;
+            $this->json['message'] = "Не удалось загрузить магазин";
         }
     }
 }

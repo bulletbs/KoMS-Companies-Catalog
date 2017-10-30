@@ -140,7 +140,7 @@ class Controller_Catalog extends Controller_System_Page
         if(!empty($_query) && mb_strlen($_query) >= 3){
             $companies->and_where(DB::expr('MATCH(`name`)'), 'AGAINST', DB::expr("('".$_query)."' IN BOOLEAN MODE)");
         }
-        $companies = $companies
+        $companies
             ->and_where('enable','=','1')
             ->order_by('vip', 'desc')
             ->order_by('addtime', 'DESC');
@@ -302,9 +302,8 @@ class Controller_Catalog extends Controller_System_Page
                     ))
                 ;
                 if(!$this->logged_in)
-                    $validation->rules('captcha', array(
-                        array('not_empty'),
-                        array('Captcha::checkCaptcha', array(':value', ':validation', ':field'))
+                    $validation->rules('g-recaptcha-response', array(
+                        array('Captcha::check', array(':value', ':validation', ':field'))
                     ));
                 if($validation->check()){
                     Email::instance()

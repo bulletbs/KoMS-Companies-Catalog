@@ -22,14 +22,14 @@ if(!Route::cache()){
             'action' => 'company',
         ));
 
-    Route::set('catalog_cat', 'shops/<city_alias>(/<cat_alias>)(/p<page>).html', array('city_alias' => '[\w\-_]+', 'cat_alias' => '[\d\w\-_]+', 'page' => '[0-9]+'))
+    Route::set('catalog_city', 'shops/<city_alias>(/p<page>).html', array('city_alias' => '[\w\-_]+', 'cat_alias' => '[\d\w\-_]+', 'page' => '[0-9]+'))
         ->defaults(array(
             'controller' => 'catalog',
             'action' => 'search',
             'city_alias' => 'all',
         ));
 
-    Route::set('catalog_city', 'shops/<city_alias>(/p<page>).html', array('city_alias' => '[\w\-_]+', 'cat_alias' => '[\d\w\-_]+', 'page' => '[0-9]+'))
+    Route::set('catalog_cat', 'shops/<city_alias>(/<cat_alias>)(/p<page>).html', array('city_alias' => '[\w\-_]+', 'cat_alias' => '[\d\w\-_]+', 'page' => '[0-9]+'))
         ->defaults(array(
             'controller' => 'catalog',
             'action' => 'search',
